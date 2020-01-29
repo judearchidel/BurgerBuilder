@@ -82,11 +82,20 @@ class BurgerBuilder extends Component {
             showorder: true
         })
     }
-    OrderCancel =()=>{
+    OrderDisable =()=>{
         this.setState({
             showorder: false
         })
     }
+    cancelOrder =() =>{
+        this.setState({
+            showorder: false
+        })
+    }
+    continueOrder =() => {
+        alert('You continue!!!!');
+    }
+
 
     render(){
         let disabledInfo = {
@@ -97,7 +106,11 @@ class BurgerBuilder extends Component {
         }
         return (
            <Aux>
-                <Modal show={this.state.showorder} orderdisable={this.OrderCancel}><OderSummary incridents={this.state.incridents}></OderSummary></Modal>
+                <Modal show={this.state.showorder} orderdisable={this.OrderDisable}>
+                <OderSummary incridents={this.state.incridents} 
+                cancelOrder={this.cancelOrder} continueOrder={this.continueOrder}
+                price={this.state.totalPrice.toFixed(2)}></OderSummary>
+                </Modal>
                 <Burger incridents={this.state.incridents}></Burger>
                 <BuildControls incridents={this.state.incridents} 
                 addIncridentHandler={this.addIncridentHandler} 
