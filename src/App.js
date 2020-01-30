@@ -1,8 +1,19 @@
-import React from 'react';
+import React ,{Component}from 'react';
 import Layout from './components/Layout/Layout';
 import BurgerBuilder from './conitainers/BurgerBuilder/BurgerBuilder';
 
-function App() {
+class App extends Component  {
+  /*state={
+      show: true
+  }
+  componentDidMount(){
+    setTimeout(()=>{
+      this.setState({
+        show:false
+      })
+    },5000)
+  }*/
+  render(){
   return (
     <div>
         <Layout>
@@ -11,6 +22,7 @@ function App() {
       
     </div>
   );
+}
 }
 
 export default App;

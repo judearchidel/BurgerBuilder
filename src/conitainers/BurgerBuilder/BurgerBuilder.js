@@ -4,6 +4,10 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import axios from '../../axios-order';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
+
 
 const INCRIDENT_PRICES ={
     salad: 0.5,
@@ -16,15 +20,26 @@ const INCRIDENT_PRICES ={
 
 class BurgerBuilder extends Component {
     state ={
-        incridents: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
-        },
+        incridents: null,
         totalPrice: 4,
         purachasable: false,
-        showorder: false
+        showorder: false,
+        loading: false,
+        error: false
+    }
+
+    componentDidMount(){
+        axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
+        .then(response=>{
+            this.setState({
+                incridents: response.data
+            });
+        })
+        .catch(error =>{
+            this.setState ({
+                error: true
+            })
+        })
     }
 
     updateOrderinfo =(incridents)=>{
@@ -93,24 +108,62 @@ class BurgerBuilder extends Component {
         })
     }
     continueOrder =() => {
-        alert('You continue!!!!');
+        
+        this.setState({
+            loading: true
+        });
+
+        console.log(this.state.loading);
+        const order ={
+            incridents: this.state.incridents,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'jude archie',
+                address: {
+                    street: 'wayanad',
+                    zip: '670645'
+                },
+             email: 'judearchie@gmailcom'   
+            }
+        }
+        axios.post('/orders.json',order)
+            .then(response=>{
+                this.setState({
+                    loading: false,
+                    showorder: false
+                })
+                console.log(response)
+            })
+            .catch(error=> {
+                this.setState({
+                    loading: false,
+                    showorder: false
+                })
+                console.log(error)
+                }
+                    );
+
+    
     }
 
 
     render(){
+       
         let disabledInfo = {
             ...this.state.incridents
         }
         for (let ke in disabledInfo){
             disabledInfo[ke]= disabledInfo[ke]<=0;
         }
-        return (
-           <Aux>
-                <Modal show={this.state.showorder} orderdisable={this.OrderDisable}>
-                <OderSummary incridents={this.state.incridents} 
-                cancelOrder={this.cancelOrder} continueOrder={this.continueOrder}
-                price={this.state.totalPrice.toFixed(2)}></OderSummary>
-                </Modal>
+        
+        let orders = <Spinner></Spinner>;
+        let summary= <Spinner></Spinner>;
+        if(this.state.error){
+            summary = <p>incridents cannot be shown</p>
+        }
+        if(this.state.incridents){
+            summary = (
+                <Aux>
                 <Burger incridents={this.state.incridents}></Burger>
                 <BuildControls incridents={this.state.incridents} 
                 addIncridentHandler={this.addIncridentHandler} 
@@ -119,9 +172,29 @@ class BurgerBuilder extends Component {
                 orderinfo={this.state.purachasable}
                 oderClicked= {this.oderClicked}
                 price={this.state.totalPrice}></BuildControls>
+                </Aux>
+            );
+        orders = <OderSummary incridents={this.state.incridents} 
+        cancelOrder={this.cancelOrder} continueOrder={this.continueOrder}
+        price={this.state.totalPrice.toFixed(2)}></OderSummary>
+        }
+
+
+        if(this.state.loading){
+            return (<Spinner></Spinner>);
+    
+        }
+        else{
+        return (
+           <Aux>
+                <Modal show={this.state.showorder} orderdisable={this.OrderDisable}>
+                { orders}
+                </Modal>
+                {summary}
            </Aux>
         );
-    }
+        }
+}
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
