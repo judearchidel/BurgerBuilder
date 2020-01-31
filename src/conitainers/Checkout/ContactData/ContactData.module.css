@@ -1,0 +1,17 @@
+.Contactdata {
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    border: 1px solid grey;
+    box-sizing: border-box;
+}
+
+.Contactdata form{
+    display: flex;
+    flex-direction: column;
+}
+.Contactdata input {
+    width: 60%;
+    margin: 5px auto;
+    padding:  5px;
+}

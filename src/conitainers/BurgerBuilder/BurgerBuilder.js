@@ -109,7 +109,7 @@ class BurgerBuilder extends Component {
     }
     continueOrder =() => {
         
-        this.setState({
+     /*   this.setState({
             loading: true
         });
 
@@ -141,8 +141,18 @@ class BurgerBuilder extends Component {
                 })
                 console.log(error)
                 }
-                    );
+                    );*/
 
+        const querparams = [];
+        for(let i in this.state.incridents){
+            querparams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.incridents[i]));
+        }
+        querparams.push("price=" + this.state.totalPrice);
+        const queryString = querparams.join('&');
+        this.props.history.push({
+            pathname: "/checkout",
+            search: '?' + queryString
+        });
     
     }
 
@@ -188,7 +198,7 @@ class BurgerBuilder extends Component {
         return (
            <Aux>
                 <Modal show={this.state.showorder} orderdisable={this.OrderDisable}>
-                { orders}
+                {orders}
                 </Modal>
                 {summary}
            </Aux>

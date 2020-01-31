@@ -1,6 +1,7 @@
 import React from 'react';
 import Aux from '../../../hoc/Aux';
 import Button from '../../UI/Button/Button';
+import {Link} from 'react-router-dom';
 
 const orderSummary = (props)=>{
     
@@ -16,8 +17,8 @@ const orderSummary = (props)=>{
         </ul>
         <p><strong>Total Price: {props.price}</strong></p>
         <p>checkout?</p>
-        <Button btntyp="Danger" clicked={props.cancelOrder}>Cancel</Button>
-        <Button btntyp="Success" clicked={props.continueOrder}>Continue</Button>
+       <Link to="/"><Button btntyp="Danger" clicked={props.cancelOrder}>Cancel</Button></Link> 
+       <Button btntyp="Success" clicked={props.continueOrder}>Continue</Button>
         </Aux>
     )
 }
