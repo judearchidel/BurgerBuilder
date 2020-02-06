@@ -1,0 +1,31 @@
+.Input label {
+ margin-left: 0;
+ padding: 10px;
+ text-align: center;
+ color: black;
+ left: 0;
+ display: block;
+}
+.Input input {
+    width: 40%;
+    margin: 5px auto;
+    padding:  5px;
+    border: none;
+    border-bottom: 1px solid black;    
+}
+.Invalid input{
+    border-bottom: 1px solid red !important;
+}
+.Input select {
+    width: 40%;
+    margin: 5px auto;
+    padding:  5px;
+    outline: none;
+    border: none;
+    background-color: white;
+    border-bottom: 1px solid black;    
+}
+.Input p{
+    margin: auto;
+    color: red;
+}

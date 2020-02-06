@@ -9,12 +9,14 @@ order.push({name: i, amount: props.ingredients[i]})
  return(
      <div>
      <p>incridents:{ order.map( el =>{
-         return  <span key={el.name+1} style={{ margin : '2px, auto',
-        textDecoration: 'bold',
-        padding: '3px',
-        boxSizing:'border-box',
-    backgroundColor: "grey",
-border: '0.5px solid black'}}><span>{el.name}</span><span>{el.amount}</span></span>
+         return  <span key={el.name+1} style={{
+            color: 'black',
+            padding: '5px',
+            boxShadow: '2px 5px #edebf0',
+            backgroundColor: '#f7f5fa',
+            marginLeft:'20px',
+            textDecoration: 'bold',
+    }}><span>{el.name}</span><span> ({el.amount})</span></span>
      })
      }</p>
  
