@@ -12,7 +12,7 @@ const transcont= Object.keys(props.incridents).map((el)=>{
 });
 
 return (<div className={classes.BuildControls}>
-    <p>Current Price: <strong>{props.price.toFixed(2)}</strong></p>
+    <p>Current Price: <strong>{props.price}</strong></p>
     {transcont}
     <button className={classes.OrderButton} disabled={!props.orderinfo} onClick={props.oderClicked}>ORDER NOW</button>
     </div>)

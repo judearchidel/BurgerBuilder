@@ -7,29 +7,19 @@ import OderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-order';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
-
-
-const INCRIDENT_PRICES ={
-    salad: 0.5,
-    cheese: 0.6,
-    meat: 0.7,
-    bacon: 0.8
-}
-
+import {connect} from 'react-redux';
+import * as actionType from '../../store/actions';
 
 
 class BurgerBuilder extends Component {
     state ={
-        incridents: null,
-        totalPrice: 4,
-        purachasable: false,
         showorder: false,
         loading: false,
         error: false
     }
 
     componentDidMount(){
-        axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
+    /*    axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
         .then(response=>{
             this.setState({
                 incridents: response.data
@@ -39,7 +29,7 @@ class BurgerBuilder extends Component {
             this.setState ({
                 error: true
             })
-        })
+        })*/
     }
 
     updateOrderinfo =(incridents)=>{
@@ -47,12 +37,10 @@ class BurgerBuilder extends Component {
                     return incridents[el] }).reduce((sum,i)=> {
                     return sum+i
                     },0)>0;
-        this.setState({
-            purachasable: pur
-        });
-        
+                    console.log(pur)
+        return pur 
     }
-    addIncridentHandler = (type) =>{
+   /* addIncridentHandler = (type) =>{
         const oldcount = this.state.incridents[type];
         const price = INCRIDENT_PRICES[type];
         const newcount = oldcount + 1;
@@ -90,7 +78,7 @@ class BurgerBuilder extends Component {
             totalPrice: newPrice
         });
         this.updateOrderinfo(upadtedIncridents);
-    }
+    }*/
 
     oderClicked= () =>{
         this.setState({
@@ -158,9 +146,9 @@ class BurgerBuilder extends Component {
 
 
     render(){
-       
+        console.log(this.props.price)
         let disabledInfo = {
-            ...this.state.incridents
+            ...this.props.ing
         }
         for (let ke in disabledInfo){
             disabledInfo[ke]= disabledInfo[ke]<=0;
@@ -171,22 +159,22 @@ class BurgerBuilder extends Component {
         if(this.state.error){
             summary = <p>incridents cannot be shown</p>
         }
-        if(this.state.incridents){
+        if(this.props.ing){
             summary = (
                 <Aux>
-                <Burger incridents={this.state.incridents}></Burger>
-                <BuildControls incridents={this.state.incridents} 
-                addIncridentHandler={this.addIncridentHandler} 
-                removeIncridentHandler={this.removeIncridentHandler}
+                <Burger incridents={this.props.ing}></Burger>
+                <BuildControls incridents={this.props.ing} 
+                addIncridentHandler={this.props.onIngredientsadded} 
+                removeIncridentHandler={this.props.onIngredientsremoved}
                 disabled={disabledInfo}
-                orderinfo={this.state.purachasable}
+                orderinfo={this.updateOrderinfo(this.props.ing)}
                 oderClicked= {this.oderClicked}
-                price={this.state.totalPrice}></BuildControls>
+                price={this.props.price}></BuildControls>
                 </Aux>
             );
-        orders = <OderSummary incridents={this.state.incridents} 
+        orders = <OderSummary incridents={this.props.ing} 
         cancelOrder={this.cancelOrder} continueOrder={this.continueOrder}
-        price={this.state.totalPrice.toFixed(2)}></OderSummary>
+        price={this.props.price}></OderSummary>
         }
 
 
@@ -205,6 +193,27 @@ class BurgerBuilder extends Component {
         );
         }
 }
+
 }
 
-export default withErrorHandler(BurgerBuilder, axios);
+const  mapStateToProps = state => {
+    return{
+        ing: state.ingredients,
+        price: state.totalPrice
+    }
+}
+
+const mapDispatchToProps= dispatch => {
+    return{
+        onIngredientsadded: (ingName)=> dispatch({
+            type: actionType.ADD_INGREDIENT,
+            ingredientName: ingName
+        }),
+        onIngredientsremoved: (ingName)=> dispatch({
+            type: actionType.REMOVE_INGREDIENT,
+            ingredientName: ingName
+        })
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
