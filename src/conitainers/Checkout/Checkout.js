@@ -2,9 +2,10 @@ import React , {Component} from 'react';
 import CheckoutOrder from '../../components/ChekoutOrder/CheckoutOrder';
 import ContactData from './ContactData/ContactData';
 import {Route} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 class Checkout extends Component {
-state = {
+/*state = {
     ingredients: {
         salad: 0,
         cheese: 0,
@@ -35,7 +36,7 @@ this.setState({
 });
 
 }
-}
+}*/
 
 CheckoutCancelHandler=()=>{
     console.log("cancel");
@@ -50,18 +51,22 @@ CheckoutContinueHandler=()=>{
     render(){
         return (
             <div>
-            <CheckoutOrder ingredients={this.state.ingredients} 
+            <CheckoutOrder ingredients={this.props.ing} 
             CheckoutCancel={this.CheckoutCancelHandler} 
             CheckoutContinue={this.CheckoutContinueHandler}/>
-            <Route path={this.props.match.url + '/contactdata'} render= { () =>(
-            <ContactData  ingredients= {this.state.ingredients} totalprice={this.state.totalprice}/>
-            )
-        }
-            />
+            <Route path={this.props.match.url + '/contactdata'}
+            component= {ContactData}/>
             </div>
         );
 }
 
 }
 
-export default Checkout;
+const mapStateToProps = state => {
+    return {
+        ing: state.ingredients,
+        price: state.totalPrice
+    }
+}
+
+export default connect(mapStateToProps)(Checkout);

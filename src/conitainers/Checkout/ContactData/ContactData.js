@@ -4,7 +4,9 @@ import Button from '../../../components/UI/Button/Button';
 import axios from '../../../axios-order';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/input/Input';
-import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
+import * as OrderAction from '../../../store/actions/index';
+import WithErrorHandler from '../../../hoc/WithErrorHandler/withErrorHandler';
 
 class ContactData extends Component {
     state= {
@@ -99,11 +101,6 @@ class ContactData extends Component {
 
     OderSubmitHandler = (event) => {
         event.preventDefault();
-        console.log(this.props.ingredients,this.props.totalprice);
-        this.setState({
-            loading: true
-        });
-
         console.log(this.state.loading);
         let orderFormData = {};
         for(let el in this.state.orderForm){
@@ -112,25 +109,28 @@ class ContactData extends Component {
 
 
         const order ={
-            ingredients: {...this.props.ingredients },
-            price: this.props.totalprice,
+            ingredients: {...this.props.ing },
+            price: this.props.price,
             orderForm: orderFormData
 
         }
-        axios.post('/orders.json',order)
-            .then(response=>{
-                this.setState({
-                    loading: false,
-                })
-                this.props.history.push('/');
-                console.log(response);
-            })
-            .catch(error=> {
-                this.setState({
-                    loading: false,
-                })
-                console.log(error)
-                })
+
+        this.props.onOrdersubmit(order);
+
+                                /*    axios.post('/orders.json',order)
+                                        .then(response=>{
+                                            this.setState({
+                                                loading: false,
+                                            })
+                                            this.props.history.push('/');
+                                            console.log(response);
+                                        })
+                                        .catch(error=> {
+                                            this.setState({
+                                                loading: false,
+                                            })
+                                            console.log(error)
+                                            })*/
     }
 
 
@@ -214,4 +214,16 @@ class ContactData extends Component {
 }
 }
 
-export default withRouter(ContactData);
+const mapStateToProps = state => {
+    return {
+        ing: state.ingredients,
+        price: state.totalprice
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrdersubmit: (orderData) => dispatch(OrderAction.purchaseStart(orderData))
+    }
+
+}
+export default connect(mapStateToProps,mapDispatchToProps)(WithErrorHandler(ContactData,axios));

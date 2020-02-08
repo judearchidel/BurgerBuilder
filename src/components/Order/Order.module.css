@@ -1,0 +1,9 @@
+.order {
+    display: flex;
+    flex-direction: column;
+    color: black;
+    background-color: #e6f5ea;
+    padding:  5px;
+    margin: 10px;
+    align-items: flex-start;
+}

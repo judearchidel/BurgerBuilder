@@ -8,7 +8,7 @@ import axios from '../../axios-order';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
 import {connect} from 'react-redux';
-import * as actionType from '../../store/actions';
+import * as BurgerActions from '../../store/actions/index.js';
 
 
 class BurgerBuilder extends Component {
@@ -19,7 +19,9 @@ class BurgerBuilder extends Component {
     }
 
     componentDidMount(){
-    /*    axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
+
+        this.props.getIngerientsHandler();
+     /*  axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
         .then(response=>{
             this.setState({
                 incridents: response.data
@@ -29,7 +31,8 @@ class BurgerBuilder extends Component {
             this.setState ({
                 error: true
             })
-        })*/
+        })
+        */
     }
 
     updateOrderinfo =(incridents)=>{
@@ -132,14 +135,13 @@ class BurgerBuilder extends Component {
                     );*/
 
         const querparams = [];
-        for(let i in this.state.incridents){
-            querparams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.incridents[i]));
+       /* for(let i in this.props.ing){
+            querparams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ing[i]));
         }
-        querparams.push("price=" + this.state.totalPrice);
-        const queryString = querparams.join('&');
+        querparams.push("price=" + this.props.price);
+        const queryString = querparams.join('&');*/
         this.props.history.push({
             pathname: "/checkout",
-            search: '?' + queryString
         });
     
     }
@@ -156,7 +158,7 @@ class BurgerBuilder extends Component {
         
         let orders = <Spinner></Spinner>;
         let summary= <Spinner></Spinner>;
-        if(this.state.error){
+        if(this.props.error){
             summary = <p>incridents cannot be shown</p>
         }
         if(this.props.ing){
@@ -199,20 +201,16 @@ class BurgerBuilder extends Component {
 const  mapStateToProps = state => {
     return{
         ing: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     }
 }
 
 const mapDispatchToProps= dispatch => {
     return{
-        onIngredientsadded: (ingName)=> dispatch({
-            type: actionType.ADD_INGREDIENT,
-            ingredientName: ingName
-        }),
-        onIngredientsremoved: (ingName)=> dispatch({
-            type: actionType.REMOVE_INGREDIENT,
-            ingredientName: ingName
-        })
+        onIngredientsadded: (ingName)=> dispatch(BurgerActions.addIngeridents(ingName)),
+        onIngredientsremoved: (ingName)=> dispatch(BurgerActions.removeIngredient(ingName)),
+        getIngerientsHandler: () => dispatch (BurgerActions.getIngredients())
     }
 }
 

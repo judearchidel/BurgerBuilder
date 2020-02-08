@@ -1,4 +1,5 @@
 import React from 'react';
+import classes from './Order.module.css';
 
 const order = (props) => {
 let order=[];
@@ -7,8 +8,9 @@ for(let i in props.ingredients){
 order.push({name: i, amount: props.ingredients[i]})
 }
  return(
+     <div className={classes.order}>
      <div>
-     <p>incridents:{ order.map( el =>{
+     <p>Incridents:{ order.map( el =>{
          return  <span key={el.name+1} style={{
             color: 'black',
             padding: '5px',
@@ -19,9 +21,10 @@ order.push({name: i, amount: props.ingredients[i]})
     }}><span>{el.name}</span><span> ({el.amount})</span></span>
      })
      }</p>
- 
-         
+ </div>
+<div>
         <p>total price: {props.price} </p>
+</div>
      </div>
  )   
 }
