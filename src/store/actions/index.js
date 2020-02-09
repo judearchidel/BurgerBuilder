@@ -4,5 +4,7 @@ removeIngredient,
 getIngredients
 } from './burgerBuilder';
 export {
-    purchaseStart
+    purchaseStart,
+    purachseInit,
+    orderStart
 } from './order';

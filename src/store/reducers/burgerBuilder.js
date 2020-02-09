@@ -38,6 +38,7 @@ case actionTypes.SET_INGREDIENTS:
     return {
         ...state,
         ingredients: action.ingredients,
+        totalPrice: 4,
         error: false
     }
 case actionTypes.FAILED_INGREDIENTS:

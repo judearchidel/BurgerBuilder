@@ -86,7 +86,7 @@ class ContactData extends Component {
                         {value: 'cheapest', displayValue: 'Cheapest'}
                     ]
                 },
-                value: '',
+                value: 'fastest',
                 Validation: {},
                 valid: true
             }
@@ -101,12 +101,12 @@ class ContactData extends Component {
 
     OderSubmitHandler = (event) => {
         event.preventDefault();
-        console.log(this.state.loading);
+        console.log(this.props.loading);
         let orderFormData = {};
         for(let el in this.state.orderForm){
             orderFormData[el]= this.state.orderForm[el].value;
         }
-
+        console.log(this.props.price)
 
         const order ={
             ingredients: {...this.props.ing },
@@ -188,7 +188,7 @@ class ContactData extends Component {
     }
 
 
-    if(this.state.loading){
+    if(this.props.loading){
         return <Spinner></Spinner>
     }else{
        return(
@@ -216,8 +216,9 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ing: state.ingredients,
-        price: state.totalprice
+        ing: state.bb.ingredients,
+        price: state.bb.totalPrice,
+        loading: state.ob.loading
     }
 }
 const mapDispatchToProps = dispatch => {
