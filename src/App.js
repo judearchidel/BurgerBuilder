@@ -3,7 +3,8 @@ import Layout from './components/Layout/Layout';
 import BurgerBuilder from './conitainers/BurgerBuilder/BurgerBuilder';
 import CheckOut from './conitainers/Checkout/Checkout';
 import Orders from './conitainers/Orders/Orders';
-import { Route, Switch }  from 'react-router-dom'
+import { Route, Switch }  from 'react-router-dom';
+import Auth from './conitainers/Auth/Auth';
 class App extends Component  {
   /*state={
       show: true
@@ -23,6 +24,7 @@ class App extends Component  {
           <Switch>
             <Route path="/" exact component={BurgerBuilder}/>
             <Route path="/checkout" component={CheckOut}/>
+            <Route path="/Auth" component={Auth}/>
             <Route path="/orders" component={Orders}/>
           </Switch>
          </Layout>

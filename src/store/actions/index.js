@@ -8,3 +8,6 @@ export {
     purachseInit,
     orderStart
 } from './order';
+export {
+auth
+} from './auth';
