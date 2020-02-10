@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import Input from '../../components/UI/input/Input';
 import Button from  '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
 import {connect} from 'react-redux';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 
 class Auth extends Component {
@@ -37,6 +39,13 @@ class Auth extends Component {
                 touched: false
             }
 
+    },
+    isSingUP: true
+}
+
+componentDidMount(){
+    if(!this.props.burgerbuilding && this.props.redirectpath !== '/'){
+        this.props.onSetRedirect();
     }
 }
 
@@ -73,7 +82,14 @@ this.setState({
 submitHandler =(event) =>{
     event.preventDefault();
     this.props.onAuth(this.state.Controls.Email.value,
-        this.state.Controls.Password.value)
+        this.state.Controls.Password.value,this.state.isSingUP)
+}
+
+SwitchSinginHandler =()=> {
+    this.setState(prevState => ({
+        isSingUP: !prevState.isSingUP
+    })
+    )
 }
 
     render(){
@@ -85,7 +101,7 @@ submitHandler =(event) =>{
                     })
             }
 
-            const form = formDetail.map(el=>(<Input key={el.id} 
+            let form = formDetail.map(el=>(<Input key={el.id} 
                 label={el.id} 
                 inputtype={el.config.elementType} 
                 elementConfig={el.config.elementConfig}
@@ -93,22 +109,53 @@ submitHandler =(event) =>{
                 invalid={!el.config.valid}
                 touched={el.config.touched}
                 changed = {(event)=> this.InputChangeHandler(event,el.id)}></Input>));
+
+             
+                if(this.props.loading){
+                    form= <Spinner></Spinner>
+                }
+                let errorMessage=null;
+                if(this.props.error){
+                    errorMessage=<p>{this.props.error}</p>
+                }
+                console.log(this.props.redirectpath);
+
+               let authedisp= null;
+               if (this.props.authenticated){
+                   authedisp = <Redirect to={this.props.redirectpath}/>
+               } 
+              
+
         return(
             <div className={classes.Auth}>
-                    <form onSubmit={this.submitHandler}>
-                    {form}
-                    <Button btntyp = "Success">SUBMIT</Button>
-                    </form>
-            </div>
+            {authedisp}
+            {errorMessage}
+            <form onSubmit={this.submitHandler}>
+            {form}
+            <Button btntyp = "Success">SUBMIT</Button>
+            </form>
+            <Button clicked={this.SwitchSinginHandler} btntyp = "Danger">SWITCH TO {this.state.isSingUP?"SINGIN":"SINGUP"}</Button>
+    </div>
         )
     }
 
 }
 
+const mapStateToProps = state =>{
+  return{
+        loading: state.au.loading,
+        error: state.au.error,
+        authenticated: state.au.token != null,
+        burgerbuilding: state.bb.building,
+        redirectpath: state.au.authRedirect,
+  }
+    }
+
 const mapDispatchProps = dispatch => {
     return {
-        onAuth: (email,Password) => dispatch(actions.auth(email,Password))
+        onAuth: (email,Password,isSingUP) => dispatch(actions.auth(email,Password,isSingUP)),
+        onSetRedirect: () => dispatch(actions.setAutheRedirectPath('/'))
     };
 };
 
-export default connect(null,mapDispatchProps)(Auth);
+export default connect(mapStateToProps,mapDispatchProps)(Auth);

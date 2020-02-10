@@ -9,5 +9,8 @@ export {
     orderStart
 } from './order';
 export {
-auth
+auth,
+LogOut,
+setAutheRedirectPath,
+authCheck
 } from './auth';

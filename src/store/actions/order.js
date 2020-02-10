@@ -23,10 +23,11 @@ export const purchaseload = () => {
     }
 }
 
-export const purchaseStart = (orderData) => {
+export const purchaseStart = (orderData,token) => {
     return dispatch => {
        dispatch (purchaseload());
-        axios.post('/orders.json',orderData)
+       
+        axios.post('/orders.json?auth='+ token,orderData)
         .then(response=>{
             console.log(response.data);
             dispatch(purchaseSuccess(response.data.name,orderData))
@@ -64,11 +65,13 @@ export const orderFail = (error) => {
     }
 }
 
-export const orderStart = () => {
+export const orderStart = (token, userId) => {
     const fetchData = []; 
+    console.log(userId)
     return dispatch => {
         dispatch(orderload());
-        axios.get('/orders.json')
+        const queryParams = '/orders.json?auth='+ token + '&orderBy="userId"&equalTo="'+ userId + '"';
+        axios.get(queryParams)
         .then(response=>{
         for(let i in response.data){
             fetchData.push({...response.data[i],i})

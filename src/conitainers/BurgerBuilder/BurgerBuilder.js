@@ -84,10 +84,18 @@ class BurgerBuilder extends Component {
     }*/
 
     oderClicked= () =>{
+
+        if (this.props.authenticated){
         this.setState({
             showorder: true
         })
+    } else{
+        this.props.onSetReirectPath('/checkout');
+        this.props.history.push("/Auth");
+        }
     }
+
+
     OrderDisable =()=>{
         this.setState({
             showorder: false
@@ -171,7 +179,8 @@ class BurgerBuilder extends Component {
                 disabled={disabledInfo}
                 orderinfo={this.updateOrderinfo(this.props.ing)}
                 oderClicked= {this.oderClicked}
-                price={this.props.price}></BuildControls>
+                price={this.props.price}
+                isauth = {this.props.authenticated}></BuildControls>
                 </Aux>
             );
         orders = <OderSummary incridents={this.props.ing} 
@@ -202,7 +211,8 @@ const  mapStateToProps = state => {
     return{
         ing: state.bb.ingredients,
         price: state.bb.totalPrice,
-        error: state.bb.error
+        error: state.bb.error,
+        authenticated: state.au.token != null
     }
 }
 
@@ -210,7 +220,8 @@ const mapDispatchToProps= dispatch => {
     return{
         onIngredientsadded: (ingName)=> dispatch(BurgerActions.addIngeridents(ingName)),
         onIngredientsremoved: (ingName)=> dispatch(BurgerActions.removeIngredient(ingName)),
-        getIngerientsHandler: () => dispatch (BurgerActions.getIngredients())
+        getIngerientsHandler: () => dispatch (BurgerActions.getIngredients()),
+        onSetReirectPath: (pa)=>dispatch(BurgerActions.setAutheRedirectPath(pa))
     }
 }
 

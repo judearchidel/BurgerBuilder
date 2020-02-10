@@ -4,6 +4,8 @@ import Order from '../../components/Order/Oder';
 import * as action from '../../store/actions/index';
 import {connect} from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import WithErrorHandlor  from '../../hoc/WithErrorHandler/withErrorHandler'
+import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
 
 class Orders extends Component {
 
@@ -14,7 +16,8 @@ class Orders extends Component {
 
 
 componentDidMount (){
-    this.props.getOders();
+    this.props.getOders(this.props.token,this.props.userId);
+    console.log(this.props.userId)
 }
 /*axios.get('/orders.json')
     .then(response=>{
@@ -55,12 +58,14 @@ render() {
 const mapStateToProps = state =>{
   return { 
      loaded: state.ob.orderLoad,
-     data: state.ob.orders
+     data: state.ob.orders,
+     token: state.au.token,
+     userId: state.au.userId
 }
 }
 const mapDispatchtoProps = dispatch => {
     return {
-        getOders: () => dispatch(action.orderStart())
+        getOders: (token,userId) => dispatch(action.orderStart(token,userId))
     }
 }
-export default connect(mapStateToProps,mapDispatchtoProps)(Orders);
+export default connect(mapStateToProps,mapDispatchtoProps)(withErrorHandler(Orders,axios));

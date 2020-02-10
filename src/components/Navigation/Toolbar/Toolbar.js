@@ -16,7 +16,7 @@ const toolbar = (props) => {
             <BurgerLogo/>
         </div>
         <nav className={classes.DesktopOnly}>
-            <Navigationitems/>
+            <Navigationitems athenticated = {props.athenticated}/>
         </nav>
     
     </header>

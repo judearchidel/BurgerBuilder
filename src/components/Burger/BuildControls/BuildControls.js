@@ -14,7 +14,7 @@ const transcont= Object.keys(props.incridents).map((el)=>{
 return (<div className={classes.BuildControls}>
     <p>Current Price: <strong>{props.price}</strong></p>
     {transcont}
-    <button className={classes.OrderButton} disabled={!props.orderinfo} onClick={props.oderClicked}>ORDER NOW</button>
+    <button className={classes.OrderButton} disabled={!props.orderinfo} onClick={props.oderClicked}>{props.isauth?"ORDER NOW":"SING UP TO CONTINUE"}</button>
     </div>)
 
 }

@@ -111,11 +111,12 @@ class ContactData extends Component {
         const order ={
             ingredients: {...this.props.ing },
             price: this.props.price,
-            orderForm: orderFormData
+            orderForm: orderFormData,
+            userId: this.props.userId
 
         }
 
-        this.props.onOrdersubmit(order);
+        this.props.onOrdersubmit(order, this.props.token);
 
                                 /*    axios.post('/orders.json',order)
                                         .then(response=>{
@@ -218,12 +219,14 @@ const mapStateToProps = state => {
     return {
         ing: state.bb.ingredients,
         price: state.bb.totalPrice,
-        loading: state.ob.loading
+        loading: state.ob.loading,
+        token: state.au.token,
+        userId: state.au.userId
     }
 }
 const mapDispatchToProps = dispatch => {
     return {
-        onOrdersubmit: (orderData) => dispatch(OrderAction.purchaseStart(orderData))
+        onOrdersubmit: (orderData,token) => dispatch(OrderAction.purchaseStart(orderData,token))
     }
 
 }
