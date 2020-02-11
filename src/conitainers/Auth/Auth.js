@@ -54,7 +54,7 @@ ckeckValidity= (value, rules)=>{
     let isvalid= true;
     
     if(rules.required){
-      isvalid = value.trim() != ''; 
+      isvalid = value.trim() !== ''; 
     }
    if(rules.minlength){
        isvalid = value.length >=3 && isvalid;
@@ -118,7 +118,6 @@ SwitchSinginHandler =()=> {
                 if(this.props.error){
                     errorMessage=<p>{this.props.error}</p>
                 }
-                console.log(this.props.redirectpath);
 
                let authedisp= null;
                if (this.props.authenticated){

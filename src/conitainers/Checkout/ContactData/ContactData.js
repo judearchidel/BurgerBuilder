@@ -101,12 +101,10 @@ class ContactData extends Component {
 
     OderSubmitHandler = (event) => {
         event.preventDefault();
-        console.log(this.props.loading);
         let orderFormData = {};
         for(let el in this.state.orderForm){
             orderFormData[el]= this.state.orderForm[el].value;
         }
-        console.log(this.props.price)
 
         const order ={
             ingredients: {...this.props.ing },
@@ -140,7 +138,7 @@ class ContactData extends Component {
         let isvalid= true;
         
         if(rules.required){
-          isvalid = value.trim() != ''; 
+          isvalid = value.trim() !== ''; 
         }
        if(rules.minlength){
            isvalid = value.length >=3 && isvalid;
@@ -166,10 +164,8 @@ class ContactData extends Component {
         updatedForm[inputId]=updatedElemnet;
         let  formIsValid= true;
         for (let el in updatedForm){
-            console.log(updatedForm[el].valid);
             formIsValid = updatedForm[el].valid && formIsValid;
         }
-        console.log(formIsValid);
         this.setState ({
             orderForm: updatedForm,
             formIsValid: formIsValid

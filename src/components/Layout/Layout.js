@@ -22,7 +22,6 @@ class Layout extends Component {
         })
     }
     render( ){
-        console.log(this.props.athenticated);
     return  (          
         <Aux>
            <Toolbar sideshow={this.showSide} athenticated ={this.props.athenticated}/> 

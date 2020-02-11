@@ -3,7 +3,6 @@ import classes from './Order.module.css';
 
 const order = (props) => {
 let order=[];
-console.log(props.ingredients);
 for(let i in props.ingredients){
 order.push({name: i, amount: props.ingredients[i]})
 }

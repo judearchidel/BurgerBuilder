@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import * as BurgerActions from '../../store/actions/index.js';
 
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
     state ={
         showorder: false,
         loading: false,
@@ -19,20 +19,19 @@ class BurgerBuilder extends Component {
     }
 
     componentDidMount(){
-
         this.props.getIngerientsHandler();
-     /*  axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
-        .then(response=>{
-            this.setState({
-                incridents: response.data
-            });
-        })
-        .catch(error =>{
-            this.setState ({
-                error: true
-            })
-        })
-        */
+                            /*  axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
+                                .then(response=>{
+                                    this.setState({
+                                        incridents: response.data
+                                    });
+                                })
+                                .catch(error =>{
+                                    this.setState ({
+                                        error: true
+                                    })
+                                })
+                                */
     }
 
     updateOrderinfo =(incridents)=>{
@@ -40,48 +39,47 @@ class BurgerBuilder extends Component {
                     return incridents[el] }).reduce((sum,i)=> {
                     return sum+i
                     },0)>0;
-                    console.log(pur)
         return pur 
     }
-   /* addIncridentHandler = (type) =>{
-        const oldcount = this.state.incridents[type];
-        const price = INCRIDENT_PRICES[type];
-        const newcount = oldcount + 1;
-        const upadtedIncridents = {
-            ...this.state.incridents
-        }
-        upadtedIncridents[type] = newcount;
-        const oldprice = this.state.totalPrice;
-        const newPrice = oldprice + price;
-        
-        this.setState({
-            incridents: upadtedIncridents,
-            totalPrice: newPrice
-        })
-        this.updateOrderinfo(upadtedIncridents);
-    }
+                                /* addIncridentHandler = (type) =>{
+                                        const oldcount = this.state.incridents[type];
+                                        const price = INCRIDENT_PRICES[type];
+                                        const newcount = oldcount + 1;
+                                        const upadtedIncridents = {
+                                            ...this.state.incridents
+                                        }
+                                        upadtedIncridents[type] = newcount;
+                                        const oldprice = this.state.totalPrice;
+                                        const newPrice = oldprice + price;
+                                        
+                                        this.setState({
+                                            incridents: upadtedIncridents,
+                                            totalPrice: newPrice
+                                        })
+                                        this.updateOrderinfo(upadtedIncridents);
+                                    }
 
-    removeIncridentHandler =(type) =>{
-        const oldcount = this.state.incridents[type];
-        if(oldcount<=0){
-            return;
-        }
+                                    removeIncridentHandler =(type) =>{
+                                        const oldcount = this.state.incridents[type];
+                                        if(oldcount<=0){
+                                            return;
+                                        }
 
-        const price = INCRIDENT_PRICES[type];
-        const newcount = oldcount - 1;
-        const upadtedIncridents = {
-            ...this.state.incridents
-        }
-        upadtedIncridents[type] = newcount;
-        const oldprice = this.state.totalPrice;
-        const newPrice = oldprice - price;
-        
-        this.setState({
-            incridents: upadtedIncridents,
-            totalPrice: newPrice
-        });
-        this.updateOrderinfo(upadtedIncridents);
-    }*/
+                                        const price = INCRIDENT_PRICES[type];
+                                        const newcount = oldcount - 1;
+                                        const upadtedIncridents = {
+                                            ...this.state.incridents
+                                        }
+                                        upadtedIncridents[type] = newcount;
+                                        const oldprice = this.state.totalPrice;
+                                        const newPrice = oldprice - price;
+                                        
+                                        this.setState({
+                                            incridents: upadtedIncridents,
+                                            totalPrice: newPrice
+                                        });
+                                        this.updateOrderinfo(upadtedIncridents);
+                                    }*/
 
     oderClicked= () =>{
 
@@ -142,8 +140,8 @@ class BurgerBuilder extends Component {
                 }
                     );*/
 
-        const querparams = [];
-       /* for(let i in this.props.ing){
+       /*  const querparams = [];
+       for(let i in this.props.ing){
             querparams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ing[i]));
         }
         querparams.push("price=" + this.props.price);
@@ -156,7 +154,6 @@ class BurgerBuilder extends Component {
 
 
     render(){
-        console.log(this.props.price)
         let disabledInfo = {
             ...this.props.ing
         }

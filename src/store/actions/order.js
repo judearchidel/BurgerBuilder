@@ -1,7 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-order';
-import order from '../../components/Order/Oder';
-import { connect } from 'react-redux';
+
 
 export const purchaseSuccess =(id,orderData) => {
     return {
@@ -29,7 +28,6 @@ export const purchaseStart = (orderData,token) => {
        
         axios.post('/orders.json?auth='+ token,orderData)
         .then(response=>{
-            console.log(response.data);
             dispatch(purchaseSuccess(response.data.name,orderData))
         })
         .catch(error=> {
@@ -45,15 +43,12 @@ export const purachseInit = () => {
 }
 
 export const orderSuccess = (orders) => {
- console.log(orders)
-
     return {
     type: actionTypes.FETCH_ORDERS_SUCCESS,
     orders: orders
 }
 }
 export const orderload =() =>{
-   console.log("started");
     return{
         type: actionTypes.FETCH_ORDERS_START
     }
@@ -67,7 +62,6 @@ export const orderFail = (error) => {
 
 export const orderStart = (token, userId) => {
     const fetchData = []; 
-    console.log(userId)
     return dispatch => {
         dispatch(orderload());
         const queryParams = '/orders.json?auth='+ token + '&orderBy="userId"&equalTo="'+ userId + '"';
@@ -76,7 +70,6 @@ export const orderStart = (token, userId) => {
         for(let i in response.data){
             fetchData.push({...response.data[i],i})
         }
-        console.log(fetchData);
         dispatch(orderSuccess(fetchData));
     })
     .catch(res=>{
