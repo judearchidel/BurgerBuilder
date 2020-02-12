@@ -23,17 +23,11 @@ export const purchaseload = () => {
 }
 
 export const purchaseStart = (orderData,token) => {
-    return dispatch => {
-       dispatch (purchaseload());
-       
-        axios.post('/orders.json?auth='+ token,orderData)
-        .then(response=>{
-            dispatch(purchaseSuccess(response.data.name,orderData))
-        })
-        .catch(error=> {
-           dispatch(purchaseFailed(error));
-            })
-    }
+   return{
+       type: actionTypes.PURCHASE_START,
+       orderData: orderData,
+       token: token
+   }
 }
 
 export const purachseInit = () => {
@@ -61,19 +55,9 @@ export const orderFail = (error) => {
 }
 
 export const orderStart = (token, userId) => {
-    const fetchData = []; 
-    return dispatch => {
-        dispatch(orderload());
-        const queryParams = '/orders.json?auth='+ token + '&orderBy="userId"&equalTo="'+ userId + '"';
-        axios.get(queryParams)
-        .then(response=>{
-        for(let i in response.data){
-            fetchData.push({...response.data[i],i})
-        }
-        dispatch(orderSuccess(fetchData));
-    })
-    .catch(res=>{
-       dispatch(orderFail(res));
-    })
+    return{
+        type: actionTypes.ORDER_INIT,
+        token: token,
+        userId: userId
     }
 }

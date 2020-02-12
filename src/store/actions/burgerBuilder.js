@@ -28,13 +28,7 @@ export const failedIngredients = () => {
 }
 
 export const getIngredients = () => {
-    return dispatch => {
-        axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
-        .then(response=>{
-            dispatch(setIngredients(response.data))
-        })
-        .catch(error =>{
-            dispatch(failedIngredients())
-        })
+    return {
+        type: actionTypes.GET_INGREDIENTS
     }
 }
