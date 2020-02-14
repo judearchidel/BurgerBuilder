@@ -1,39 +1,31 @@
-import React,{ Component } from 'react';
+import React,{useState } from 'react';
 import { connect } from 'react-redux';
 import Aux from '../../hoc/Aux';
 import classes from './Layout.module.css';
 import Toolbar from '../Navigation/Toolbar/Toolbar'
 import SideDrawer from '../Navigation/Sidedrawer/SideDrawer';
 
-class Layout extends Component {
-         
-    state ={
-        showsideDrawer: false
-    }
+ const Layout = (props) =>{
+      
+    const [showsideDrawer,setshowsideDrawer]=useState(false);
     
-    sideDrawerclose =() =>{
-        this.setState({
-            showsideDrawer: false
-        })
+    const sideDrawerclose =() =>{
+       setshowsideDrawer(false)
          } 
-    showSide = ()=>{
-        this.setState({
-            showsideDrawer: true
-        })
+    const showSide = ()=>{
+        setshowsideDrawer(true)
     }
-    render( ){
     return  (          
         <Aux>
-           <Toolbar sideshow={this.showSide} athenticated ={this.props.athenticated}/> 
-              <SideDrawer open={this.state.showsideDrawer}
-               closed={this.sideDrawerclose}
-               athenticated ={this.props.athenticated}/>
+           <Toolbar sideshow={showSide} athenticated ={props.athenticated}/> 
+              <SideDrawer open={showsideDrawer}
+               closed={sideDrawerclose}
+               athenticated ={props.athenticated}/>
                <main className={classes.content}>
-                {this.props.children}
+                {props.children}
                </main>
          </Aux>
     );
-    }
 }
 const mapSateToProps = state =>{
     return {

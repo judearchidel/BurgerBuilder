@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React,{useState, useEffect, useCallback} from 'react';
 import Aux from '../../hoc/Aux';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -7,19 +7,32 @@ import OderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-order';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import * as BurgerActions from '../../store/actions/index.js';
 
 
-export class BurgerBuilder extends Component {
-    state ={
-        showorder: false,
-        loading: false,
-        error: false
-    }
+const BurgerBuilder =(props)=> {
 
-    componentDidMount(){
-        this.props.getIngerientsHandler();
+const [showorder, setshoworder]= useState(false);
+const [loading, setloading]= useState(false);
+
+const dispatch = useDispatch();
+
+      const  onIngredientsadded = (ingName)=> dispatch(BurgerActions.addIngeridents(ingName));
+      const  onIngredientsremoved = (ingName)=> dispatch(BurgerActions.removeIngredient(ingName));
+      const  getIngerientsHandler = useCallback(() => dispatch (BurgerActions.getIngredients()),[dispatch]);
+      const  onSetReirectPath = (pa)=>dispatch(BurgerActions.setAutheRedirectPath(pa));
+
+
+      const ing = useSelector(state=> { return  state.bb.ingredients});
+      const price = useSelector(state=>  state.bb.totalPrice);
+      const error = useSelector(state=> state.bb.error);
+     const  authenticated = useSelector(state=> state.au.token != null);
+ 
+    useEffect(()=>{
+        getIngerientsHandler();
+    },[getIngerientsHandler])
+       
                             /*  axios.get('https://burgerbilder-4290c.firebaseio.com/incridents.json')
                                 .then(response=>{
                                     this.setState({
@@ -32,9 +45,8 @@ export class BurgerBuilder extends Component {
                                     })
                                 })
                                 */
-    }
 
-    updateOrderinfo =(incridents)=>{
+    const updateOrderinfo = (incridents)=>{
         const pur = Object.keys(incridents).map(el=> {
                     return incridents[el] }).reduce((sum,i)=> {
                     return sum+i
@@ -81,30 +93,25 @@ export class BurgerBuilder extends Component {
                                         this.updateOrderinfo(upadtedIncridents);
                                     }*/
 
-    oderClicked= () =>{
+    const oderClicked= () =>{
 
-        if (this.props.authenticated){
-        this.setState({
-            showorder: true
-        })
+        if (authenticated){
+        setshoworder(true);
     } else{
-        this.props.onSetReirectPath('/checkout');
-        this.props.history.push("/Auth");
+        onSetReirectPath('/checkout');
+        props.history.push("/Auth");
         }
     }
 
 
-    OrderDisable =()=>{
-        this.setState({
-            showorder: false
-        })
+    const OrderDisable =()=>{
+       setshoworder(false)
     }
-    cancelOrder =() =>{
-        this.setState({
-            showorder: false
-        })
+   const  cancelOrder =() =>{
+    setshoworder(false)   
     }
-    continueOrder =() => {
+
+    const continueOrder =() => {
         
      /*   this.setState({
             loading: true
@@ -146,16 +153,15 @@ export class BurgerBuilder extends Component {
         }
         querparams.push("price=" + this.props.price);
         const queryString = querparams.join('&');*/
-        this.props.history.push({
+        props.history.push({
             pathname: "/checkout",
         });
     
     }
 
 
-    render(){
         let disabledInfo = {
-            ...this.props.ing
+            ...ing
         }
         for (let ke in disabledInfo){
             disabledInfo[ke]= disabledInfo[ke]<=0;
@@ -163,63 +169,48 @@ export class BurgerBuilder extends Component {
         
         let orders = <Spinner></Spinner>;
         let summary= <Spinner></Spinner>;
-        if(this.props.error){
+        if(error){
             summary = <p>incridents cannot be shown</p>
         }
-        if(this.props.ing){
+        if(ing){
             summary = (
                 <Aux>
-                <Burger incridents={this.props.ing}></Burger>
-                <BuildControls incridents={this.props.ing} 
-                addIncridentHandler={this.props.onIngredientsadded} 
-                removeIncridentHandler={this.props.onIngredientsremoved}
+                <Burger incridents={ing}></Burger>
+                <BuildControls incridents={ing} 
+                addIncridentHandler={onIngredientsadded} 
+                removeIncridentHandler={onIngredientsremoved}
                 disabled={disabledInfo}
-                orderinfo={this.updateOrderinfo(this.props.ing)}
-                oderClicked= {this.oderClicked}
-                price={this.props.price}
-                isauth = {this.props.authenticated}></BuildControls>
+                orderinfo={updateOrderinfo(ing)}
+                oderClicked= {oderClicked}
+                price={price}
+                isauth = {authenticated}></BuildControls>
                 </Aux>
             );
-        orders = <OderSummary incridents={this.props.ing} 
-        cancelOrder={this.cancelOrder} continueOrder={this.continueOrder}
-        price={this.props.price}></OderSummary>
+        orders = <OderSummary incridents={ing} 
+        cancelOrder={cancelOrder} continueOrder={continueOrder}
+        price={price}></OderSummary>
         }
 
 
-        if(this.state.loading){
+        if(loading){
             return (<Spinner></Spinner>);
     
         }
         else{
         return (
            <Aux>
-                <Modal show={this.state.showorder} orderdisable={this.OrderDisable}>
+                <Modal show={showorder} orderdisable={OrderDisable}>
                 {orders}
                 </Modal>
                 {summary}
            </Aux>
         );
         }
-}
 
 }
 
-const  mapStateToProps = state => {
-    return{
-        ing: state.bb.ingredients,
-        price: state.bb.totalPrice,
-        error: state.bb.error,
-        authenticated: state.au.token != null
-    }
-}
 
-const mapDispatchToProps= dispatch => {
-    return{
-        onIngredientsadded: (ingName)=> dispatch(BurgerActions.addIngeridents(ingName)),
-        onIngredientsremoved: (ingName)=> dispatch(BurgerActions.removeIngredient(ingName)),
-        getIngerientsHandler: () => dispatch (BurgerActions.getIngredients()),
-        onSetReirectPath: (pa)=>dispatch(BurgerActions.setAutheRedirectPath(pa))
-    }
-}
 
-export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
+
+
+export default withErrorHandler(BurgerBuilder, axios);

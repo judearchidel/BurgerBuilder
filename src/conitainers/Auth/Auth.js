@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import Input from '../../components/UI/input/Input';
 import Button from  '../../components/UI/Button/Button';
@@ -7,9 +7,9 @@ import {connect} from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 
-class Auth extends Component {
-    state={
-        Controls: {
+const Auth =(props)=> {
+   
+       const initalControls = {
             Email: {
                 elementType: 'input',
                 elementConfig:{
@@ -39,17 +39,18 @@ class Auth extends Component {
                 touched: false
             }
 
-    },
-    isSingUP: true
-}
+    };
+const [Controls,setControls]= useState(initalControls);
+const [isSingUP,setisSingUP]= useState(true);
+const {burgerbuilding,redirectpath,onSetRedirect}= props;
+useEffect(()=>{
+    if(!burgerbuilding && redirectpath !== '/'){
+        onSetRedirect();
+    } 
+},[burgerbuilding,redirectpath,onSetRedirect])
+    
 
-componentDidMount(){
-    if(!this.props.burgerbuilding && this.props.redirectpath !== '/'){
-        this.props.onSetRedirect();
-    }
-}
-
-ckeckValidity= (value, rules)=>{
+const ckeckValidity= (value, rules)=>{
        
     let isvalid= true;
     
@@ -65,39 +66,36 @@ ckeckValidity= (value, rules)=>{
 
 return isvalid
 }
-InputChangeHandler =(event, controlName) => {
+
+const InputChangeHandler =(event, controlName) => {
 const updateControls ={
-    ...this.state.Controls,
+    ...Controls,
     [controlName]: {
-        ...this.state.Controls[controlName],
+        ...Controls[controlName],
         value: event.target.value,
-        valid: this.ckeckValidity(event.target.value, this.state.Controls[controlName].Validation),
+        valid: ckeckValidity(event.target.value, Controls[controlName].Validation),
         touched: true
     }
 }
-this.setState({
-    Controls: updateControls
-})
+setControls(updateControls)
 }
-submitHandler =(event) =>{
+
+const submitHandler =(event) =>{
     event.preventDefault();
-    this.props.onAuth(this.state.Controls.Email.value,
-        this.state.Controls.Password.value,this.state.isSingUP)
+    props.onAuth(Controls.Email.value,
+        Controls.Password.value,isSingUP)
 }
 
-SwitchSinginHandler =()=> {
-    this.setState(prevState => ({
-        isSingUP: !prevState.isSingUP
-    })
-    )
+const SwitchSinginHandler =()=> {
+    setisSingUP(!isSingUP)
 }
 
-    render(){
+
         let formDetail= [];
-        for (let el in this.state.Controls){
+        for (let el in Controls){
             formDetail.push({
                 id: el,
-                config: this.state.Controls[el]
+                config: Controls[el]
                     })
             }
 
@@ -108,20 +106,20 @@ SwitchSinginHandler =()=> {
                 value= {el.config.value}
                 invalid={!el.config.valid}
                 touched={el.config.touched}
-                changed = {(event)=> this.InputChangeHandler(event,el.id)}></Input>));
+                changed = {(event)=> InputChangeHandler(event,el.id)}></Input>));
 
              
-                if(this.props.loading){
+                if(props.loading){
                     form= <Spinner></Spinner>
                 }
                 let errorMessage=null;
-                if(this.props.error){
-                    errorMessage=<p>{this.props.error}</p>
+                if(props.error){
+                    errorMessage=<p>{props.error}</p>
                 }
 
                let authedisp= null;
-               if (this.props.authenticated){
-                   authedisp = <Redirect to={this.props.redirectpath}/>
+               if (props.authenticated){
+                   authedisp = <Redirect to={props.redirectpath}/>
                } 
               
 
@@ -129,15 +127,13 @@ SwitchSinginHandler =()=> {
             <div className={classes.Auth}>
             {authedisp}
             {errorMessage}
-            <form onSubmit={this.submitHandler}>
+            <form onSubmit={submitHandler}>
             {form}
             <Button btntyp = "Success">SUBMIT</Button>
             </form>
-            <Button clicked={this.SwitchSinginHandler} btntyp = "Danger">SWITCH TO {this.state.isSingUP?"SINGIN":"SINGUP"}</Button>
+            <Button clicked={SwitchSinginHandler} btntyp = "Danger">SWITCH TO {isSingUP?"SINGIN":"SINGUP"}</Button>
     </div>
         )
-    }
-
 }
 
 const mapStateToProps = state =>{

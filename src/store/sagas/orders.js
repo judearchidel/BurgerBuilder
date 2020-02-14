@@ -20,7 +20,7 @@ export function*  purchaseStartSaga (action){
        yield put(actions.purchaseload());
         try {
          const response = yield axios.post('/orders.json?auth='+ action.token,action.orderData)
-         yield put(action.purchaseSuccess(response.data.name,action.orderData))
+         yield put(actions.purchaseSuccess(response.data.name,action.orderData))
          }catch(error){
          yield put(actions.purchaseFailed(error));
              }

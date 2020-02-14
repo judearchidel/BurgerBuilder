@@ -1,27 +1,28 @@
-import React ,{Component}from 'react';
+import React ,{useEffect , lazy ,Suspense}from 'react';
 import {connect} from 'react-redux'
 import Layout from './components/Layout/Layout';
-import asyncComponent from './hoc/asyncComponent/ayncComponent';
 import BurgerBuilder from './conitainers/BurgerBuilder/BurgerBuilder';
 import { Route, Switch ,Redirect}  from 'react-router-dom';
 import Logout from './conitainers/Auth/logout/logout';
 import * as actions from './store/actions/index';
 
 
-const AsyncCheckout = asyncComponent(() => {
+const Checkout = lazy(() => {
   return import('./conitainers/Checkout/Checkout');
 });
-const AsyncOrders = asyncComponent(() => {
+const Orders = lazy(() => {
   return import ('./conitainers/Orders/Orders');
 });
-const AsyncAuth = asyncComponent(()=>{
+const Auth = lazy(()=>{
   return import ('./conitainers/Auth/Auth');
 });
 
-class App extends Component  {
-  componentDidMount(){
-    this.props.onsinginauto();
-  }
+const App = props =>  {
+  const {onsinginauto}= props;
+  useEffect(()=>{
+    onsinginauto();
+  },[onsinginauto])
+  
   /*state={
       show: true
   }
@@ -32,23 +33,22 @@ class App extends Component  {
       })
     },5000)
   }*/
-  render(){
 
     let routes = (
       <Switch>
             <Route path="/" exact component={BurgerBuilder}/>
-            <Route path="/Auth" component={AsyncAuth}/>
+            <Route path="/Auth" render={(props)=>(<Auth {...props}/>)}/>
             <Redirect to='/'/>
       </Switch>
     );
-      if(this.props.isauthenticated){
+      if(props.isauthenticated){
         routes = (
           <Switch>
           <Route path="/" exact component={BurgerBuilder}/>
-          <Route path="/Auth" component={AsyncAuth}/>
-          <Route path="/checkout" component={AsyncCheckout}/>
+          <Route path="/Auth" render={(props)=>(<Auth {...props}/>)} />
+          <Route path="/checkout" render={(props)=>(<Checkout {...props}/>)}/>
           <Route path="/logout" component={Logout}/>
-          <Route path="/orders" component={AsyncOrders}/>
+          <Route path="/orders" render={(props)=>(<Orders {...props}/>)}/>
         </Switch>
         )
       }
@@ -58,12 +58,11 @@ class App extends Component  {
     
     <div>
         <Layout>
-          {routes}
+          <Suspense fallback={<p>Loading ....</p>}>{routes}</Suspense>
          </Layout>
     </div>
    
-  );
-}
+  )
 }
 
 const mapStateToProps = state => {

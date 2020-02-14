@@ -1,10 +1,12 @@
-import React , {Component} from 'react';
+import React from 'react';
 import CheckoutOrder from '../../components/ChekoutOrder/CheckoutOrder';
 import ContactData from './ContactData/ContactData';
 import {Route, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as action from '../../store/actions/index';
-class Checkout extends Component {
+
+
+const  Checkout = (props) => {
 /*state = {
     ingredients: {
         salad: 0,
@@ -37,39 +39,34 @@ this.setState({
 
 }
 }*/
-componentWillUpdate(){
 
-this.props.onInitPurchase();
+props.onInitPurchase();
 
-}
 
-CheckoutCancelHandler=()=>{
+const CheckoutCancelHandler =()=>{
     console.log("cancel");
-    this.props.history.goBack();
+    props.history.goBack();
 }
 
-CheckoutContinueHandler=()=>{
-    this.props.history.push("/checkout/contactdata");
+const CheckoutContinueHandler=()=>{
+    props.history.push("/checkout/contactdata");
 }
 
-
-    render(){
         let summary = <Redirect to='/'/>
-        
-        if (this.props.ing){
-            const redierPur = this.props.purchase?<Redirect to='/'/>:null;
+        if (props.ing){
+            console.log(props.purchase)
+            const redierPur = props.purchase?<Redirect to='/'/>:null;
             summary= (<div>
                 {redierPur}
-            <CheckoutOrder ingredients={this.props.ing} 
-            CheckoutCancel={this.CheckoutCancelHandler} 
-            CheckoutContinue={this.CheckoutContinueHandler}/>
-            <Route path={this.props.match.url + '/contactdata'}
+            <CheckoutOrder ingredients={props.ing} 
+            CheckoutCancel={CheckoutCancelHandler} 
+            CheckoutContinue={CheckoutContinueHandler}/>
+            <Route path={props.match.url + '/contactdata'}
             component= {ContactData}/>
             </div>);
         }
         return summary; 
-           
-}
+
 
 }
 

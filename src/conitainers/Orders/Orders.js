@@ -1,4 +1,4 @@
-import React ,{ Component } from 'react';
+import React ,{useEffect} from 'react';
 import axios from '../../axios-order';
 import Order from '../../components/Order/Oder';
 import * as action from '../../store/actions/index';
@@ -6,17 +6,16 @@ import {connect} from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
 
-class Orders extends Component {
-
+const Orders =(props)=> {
+const {getOders,token,userId} = props;
     /*state={
     loaded: false,
     data: []
 }*/
-
-
-componentDidMount (){
-    this.props.getOders(this.props.token,this.props.userId);
-}
+useEffect(()=>{
+    getOders(token,userId);
+},[token,userId,getOders])
+    
 /*axios.get('/orders.json')
     .then(response=>{
         for(let i in response.data){
@@ -32,14 +31,9 @@ componentDidMount (){
     })
 */
   
-
-
-
-
-render() {
     let orderrender= <Spinner></Spinner>
-    if(!this.props.loaded){
-    orderrender= this.props.data.map(el=>{
+    if(!props.loaded){
+    orderrender= props.data.map(el=>{
         return <Order key={el.i}
             ingredients={el.ingredients}
             price={+el.price}/>
@@ -50,7 +44,6 @@ render() {
            {orderrender}
         </div>
     );
-}
 }
 
 const mapStateToProps = state =>{
